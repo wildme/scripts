@@ -38,7 +38,7 @@ def msearch(p, f, s):
                 mres[myfile] = ['no match']
     return mres
 
-text = msearch('python/test', 'file.txt', '1234')
+text = msearch('/home/kostya/python/test', 'file.txt', '1234')
 for k in text.keys():
     print('file: ', k, 'strings: ', text[k])
 
