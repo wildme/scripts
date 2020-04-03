@@ -1,2 +1,2 @@
 # scripts
-Scripts that I wrote for a personal use
+Scripts that I wrote for personal use
