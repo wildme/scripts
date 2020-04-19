@@ -2,7 +2,7 @@
 import os
 import re
 
-def dirlist(base='/home/kostya/python/test', rec_l = 4):
+def dirlist(base = os.getcwd(), rec_l = 4):
     root = [] 
     items = list(map((lambda x: x.path),\
             filter((lambda x: (not x.name.startswith('.')) and x.is_dir()),\
