@@ -22,11 +22,15 @@ def fsearch(path, filename):
     dirs = dirlist(path)
     res = {}
     for d in dirs:
-        items = list(map((lambda x: x.name), \
-                filter((lambda x: (not x.name.startswith('.')) and x.is_file()),\
-                os.scandir(d))))
-        if filename in items:
-            res[d] = filename
+        items = list(filter((lambda x: re.search(filename, x)), \
+                map((lambda x: x.name), \
+                filter((lambda x: \
+                (not x.name.startswith('.')) \
+                and x.is_file()), os.scandir(d)))))
+        if(items):
+            res[d] = items
+                #if filename in items:
+            #res[d] = filename
     return res
 
 def msearch(p, f, s):
