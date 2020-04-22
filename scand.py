@@ -29,22 +29,20 @@ def fsearch(path, filename):
                 and x.is_file()), os.scandir(d)))))
         if(items):
             res[d] = items
-                #if filename in items:
-            #res[d] = filename
     return res
 
 def msearch(p, f, s):
     files = fsearch(p, f)
-    mres = {} # collect results in a dictionary
     for k in files.keys():
-        mstr = [] # collect matches strings per a file
-        myfile = k + '/' + files[k]
-        for line in open(myfile):
-            match = re.search(s, line)
-            if match:
-                mstr.append(line)
-            if mstr:
-                mres[myfile] = mstr
-            else:
-                mres[myfile] = ['no match']
-    return mres
+        for i in files[k]:
+            myfile = k + '/' + i
+            c = 0
+            print(myfile)
+            for line in open(myfile):
+                c += 1
+                match = re.search(s, line)
+                if match:
+                    print('L%d %s' % (c, line), end='')
+                else:
+                    pass
+    return 0
