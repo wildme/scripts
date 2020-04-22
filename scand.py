@@ -5,7 +5,9 @@ import re
 def dirlist(base = os.getcwd(), rec_l = 4):
     root = [] 
     items = list(map((lambda x: x.path),\
-            filter((lambda x: (not x.name.startswith('.')) and x.is_dir()),\
+            filter((lambda x: \
+            (not x.name.startswith('.')) and os.access(x, os.R_OK)\
+            and x.is_dir()),\
             os.scandir(base))))
 
     for i in items:
