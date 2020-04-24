@@ -37,6 +37,12 @@ else:
                 print(arg, 'is missing an argument. hyphen is not allowed.')
                 D = {}
                 break
+            try:
+                if arg == '-m' and '-f' not in sys.argv[1:]: raise SyntaxError
+            except SyntaxError:
+                print('-m option requires a file to be specified. Use -f <file>')
+                D = {}
+                break
         if c > 1:
             print ("Syntax error: too much arguments")
             print("Usage: scand [-d path] [-r number]", end=' ')
@@ -46,6 +52,4 @@ else:
         else:
             c += 1
             pass
-if '-m' in D and '-f' not in D:
-    print('-m option requires a file to be specified. Use -f <file>')
 #print(D)
