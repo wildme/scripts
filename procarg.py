@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
-import sys
-import scand
 
-OPTS = ['-d', '-r', '-f', '-m']
-D = {} 
-if len(sys.argv) == 1:
-    dl = scand.dirlist()
-    for i in dl:
-        print(i, end='\n')
-else:
-    for arg in sys.argv[1:]:
+def myargs(l_args):
+    D = {} 
+    OPTS = ['-d', '-r', '-f', '-m']
+    for arg in l_args:
         if arg not in OPTS and arg.startswith('-'):
             print("Invalid option: ", arg)
             print("Usage: scand [-d path] [-r number]", end=' ')
@@ -21,10 +15,10 @@ else:
             D = {}
             break
         if arg in OPTS:
-            ind = (sys.argv).index(arg)
+            ind = (l_args).index(arg)
             c = 0
             try:
-                D[arg] = sys.argv[ind + 1]
+                D[arg] = l_args[ind + 1]
             except IndexError:
                 print("Syntax error:", end=' ')
                 print(arg, 'is missing an argument')
@@ -38,7 +32,7 @@ else:
                 D = {}
                 break
             try:
-                if arg == '-m' and '-f' not in sys.argv[1:]: raise SyntaxError
+                if arg == '-m' and '-f' not in l_args: raise SyntaxError
             except SyntaxError:
                 print('-m option requires a file to be specified. Use -f <file>')
                 D = {}
@@ -52,4 +46,4 @@ else:
         else:
             c += 1
             pass
-#print(D)
+    return D

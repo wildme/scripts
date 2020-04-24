@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
+import sys
 import re
+import procarg
 
 def dirlist(base = os.getcwd(), rec_l = 4):
     root = [] 
@@ -48,3 +50,13 @@ def msearch(p, f, s):
                 else:
                     pass
     return 0
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        dl = scand.dirlist()
+        for i in dl:
+            print(i, end='\n')
+    else:
+        L =  procarg.myargs(sys.argv[1:])
+
+
