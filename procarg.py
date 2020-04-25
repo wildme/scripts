@@ -37,6 +37,10 @@ def myargs(l_args):
                 print('-m option requires a file to be specified. Use -f <file>')
                 D = {}
                 break
+            try:
+                if arg == '-r': raise TypeError
+            except TypeError:
+                D[arg] = int(l_args[ind + 1])
         if c > 1:
             print ("Syntax error: too much arguments")
             print("Usage: scand [-d path] [-r number]", end=' ')
