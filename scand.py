@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.7
 import os
 import sys
 import re
@@ -53,10 +53,28 @@ def msearch(p, f, s):
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        dl = scand.dirlist()
+        dl = dirlist()
         for i in dl:
             print(i, end='\n')
     else:
+        args_g1 = [0, 0]
+        args_g2 = 0
+        args_g3 = 0
         L =  procarg.myargs(sys.argv[1:])
+
+        if '-d' in L.keys(): args_g1[0] = 1
+        if '-r' in L.keys(): args_g1[1] = 1
+        if '-f' in L.keys(): args_g2 = 1
+        if '-m' in L.keys(): args_g3 = 1
+if args_g1[0] and args_g1[1] == 1:
+    where = dirlist(base=L['-d'], rec_l=L['-r'])
+else:
+    if args_g1[0] == 1:
+        where = dirlist(base=L['-d'])
+    if args_g1[1] == 1:
+        where = dirlist(rec_l=L['-r'])
+
+if args_g2 == 1:
+    what = fsearch(where,filename=L['-f'])
 
 
