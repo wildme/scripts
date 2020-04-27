@@ -4,7 +4,7 @@ import sys
 import re
 import procarg
 
-def dirlist(base = os.getcwd(), rec_l = 4):
+def dirlist(base = os.getcwd(), rec_l = 8):
     root = [] 
     items = list(map((lambda x: x.path),\
             filter((lambda x: \
@@ -22,8 +22,8 @@ def dirlist(base = os.getcwd(), rec_l = 4):
                 root.append(i2)
     return root 
 
-def fsearch(path, filename):
-    dirs = dirlist(path)
+def fsearch(dirs, filename):
+    #dirs = dirlist(path)
     res = {}
     for d in dirs:
         items = list(filter((lambda x: re.search(filename, x)), \
@@ -35,21 +35,24 @@ def fsearch(path, filename):
             res[d] = items
     return res
 
-def msearch(p, f, s):
-    files = fsearch(p, f)
+def msearch(files, s):
+    #files = fsearch(p, f)
+    res = {}
     for k in files.keys():
         for i in files[k]:
             myfile = k + '/' + i
             c = 0
-            print(myfile)
+            temp = []
             for line in open(myfile):
                 c += 1
                 match = re.search(s, line)
                 if match:
-                    print('L%d %s' % (c, line), end='')
+                    a = 'L%d %s' % (c, line)
+                    temp.append(a)
+                    res[myfile] = temp
                 else:
                     pass
-    return 0
+    return res
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
@@ -57,24 +60,33 @@ if __name__ == '__main__':
         for i in dl:
             print(i, end='\n')
     else:
+        L =  procarg.myargs(sys.argv[1:])
+
         args_g1 = [0, 0]
         args_g2 = 0
         args_g3 = 0
-        L =  procarg.myargs(sys.argv[1:])
 
         if '-d' in L.keys(): args_g1[0] = 1
         if '-r' in L.keys(): args_g1[1] = 1
         if '-f' in L.keys(): args_g2 = 1
         if '-m' in L.keys(): args_g3 = 1
-if args_g1[0] and args_g1[1] == 1:
-    where = dirlist(base=L['-d'], rec_l=L['-r'])
-else:
-    if args_g1[0] == 1:
-        where = dirlist(base=L['-d'])
-    if args_g1[1] == 1:
-        where = dirlist(rec_l=L['-r'])
-
-if args_g2 == 1:
-    what = fsearch(where,filename=L['-f'])
-
-
+        
+        if args_g1[0] == 1 and args_g1[1] == 1:
+            where = dirlist(base=L['-d'], rec_l=L['-r'])
+            #print(where)
+        else:
+            if args_g1[0] == 0 and args_g1[1] == 0:
+                where = dirlist()
+            else:
+                if args_g1[0] == 1:
+                    where = dirlist(base=L['-d'])
+                    #print(where)
+                if args_g1[1] == 1:
+                    where = dirlist(rec_l=L['-r'])
+                    #print(where)
+        if args_g2 == 1:
+            what = fsearch(dirs=where,filename=L['-f'])
+            #print(what)
+        if args_g3 == 1:
+            inside = msearch(files=what, s=L['-m'])
+            #print(inside)
