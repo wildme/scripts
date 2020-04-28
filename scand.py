@@ -23,7 +23,6 @@ def dirlist(base = os.getcwd(), rec_l = 4):
     return root 
 
 def fsearch(dirs, filename):
-    #dirs = dirlist(path)
     res = {}
     for d in dirs:
         items = list(filter((lambda x: re.search(filename, x)), \
@@ -36,7 +35,6 @@ def fsearch(dirs, filename):
     return res
 
 def msearch(files, s):
-    #files = fsearch(p, f)
     res = {}
     for k in files.keys():
         for i in files[k]:
