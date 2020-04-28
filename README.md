@@ -6,7 +6,7 @@ This directory contanins scripts in Python I wrote for personal use.
 **NAME**  
 **scand** - scan the directory tree for subdirectories, files and string matches in the found files.  
 
-**SYNOPSYS**  
+**SYNOPSIS**  
 **scand** [**-d** path] [**-r** number] [**-f** string] [**-m** string]  
 
 **DESCRIPTION**  
