@@ -62,6 +62,7 @@ if __name__ == '__main__':
     else:
         L =  procarg.myargs(sys.argv[1:])
 
+        where = what = inside = None
         args_g1 = [0, 0]
         args_g2 = 0
         args_g3 = 0
@@ -73,20 +74,25 @@ if __name__ == '__main__':
         
         if args_g1[0] == 1 and args_g1[1] == 1:
             where = dirlist(base=L['-d'], rec_l=L['-r'])
-            #print(where)
         else:
             if args_g1[0] == 0 and args_g1[1] == 0:
                 where = dirlist()
             else:
                 if args_g1[0] == 1:
                     where = dirlist(base=L['-d'])
-                    #print(where)
                 if args_g1[1] == 1:
                     where = dirlist(rec_l=L['-r'])
-                    #print(where)
         if args_g2 == 1:
             what = fsearch(dirs=where,filename=L['-f'])
-            #print(what)
         if args_g3 == 1:
             inside = msearch(files=what, s=L['-m'])
-            #print(inside)
+
+        for i in (inside, what, where):
+            if i != None:
+                if type(i) == list:
+                    for x in i:
+                        print(x)
+                if type(i) == dict:
+                    for y in i.keys():
+                        print(y,':', i[y])
+                break
