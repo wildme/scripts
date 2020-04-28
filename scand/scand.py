@@ -2,7 +2,7 @@
 import os
 import sys
 import re
-import procarg
+import mod1_args
 
 def dirlist(base = os.getcwd(), rec_l = 3):
     root = [] 
@@ -53,7 +53,7 @@ def msearch(files, s):
     return res
 
 if __name__ == '__main__':
-    L =  procarg.myargs(sys.argv[1:])
+    L =  mod1_args.myargs(sys.argv[1:])
 
     where = what = inside = None
     args_g1 = [0, 0]

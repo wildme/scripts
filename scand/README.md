@@ -1,7 +1,4 @@
-# scripts
-This directory contanins scripts in Python I wrote for personal use.
-
-## scand.py
+# scand.py
 
 **NAME**  
 **scand** - scan the directory tree for subdirectories, files and string matches in the found files.  
