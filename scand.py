@@ -4,7 +4,7 @@ import sys
 import re
 import procarg
 
-def dirlist(base = os.getcwd(), rec_l = 8):
+def dirlist(base = os.getcwd(), rec_l = 4):
     root = [] 
     items = list(map((lambda x: x.path),\
             filter((lambda x: \
@@ -55,44 +55,39 @@ def msearch(files, s):
     return res
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        dl = dirlist()
-        for i in dl:
-            print(i, end='\n')
+    L =  procarg.myargs(sys.argv[1:])
+
+    where = what = inside = None
+    args_g1 = [0, 0]
+    args_g2 = 0
+    args_g3 = 0
+
+    if '-d' in L.keys(): args_g1[0] = 1
+    if '-r' in L.keys(): args_g1[1] = 1
+    if '-f' in L.keys(): args_g2 = 1
+    if '-m' in L.keys(): args_g3 = 1
+    
+    if args_g1[0] == 1 and args_g1[1] == 1:
+        where = dirlist(base=L['-d'], rec_l=L['-r'])
     else:
-        L =  procarg.myargs(sys.argv[1:])
-
-        where = what = inside = None
-        args_g1 = [0, 0]
-        args_g2 = 0
-        args_g3 = 0
-
-        if '-d' in L.keys(): args_g1[0] = 1
-        if '-r' in L.keys(): args_g1[1] = 1
-        if '-f' in L.keys(): args_g2 = 1
-        if '-m' in L.keys(): args_g3 = 1
-        
-        if args_g1[0] == 1 and args_g1[1] == 1:
-            where = dirlist(base=L['-d'], rec_l=L['-r'])
+        if args_g1[0] == 0 and args_g1[1] == 0:
+            where = dirlist()
         else:
-            if args_g1[0] == 0 and args_g1[1] == 0:
-                where = dirlist()
-            else:
-                if args_g1[0] == 1:
-                    where = dirlist(base=L['-d'])
-                if args_g1[1] == 1:
-                    where = dirlist(rec_l=L['-r'])
-        if args_g2 == 1:
-            what = fsearch(dirs=where,filename=L['-f'])
-        if args_g3 == 1:
-            inside = msearch(files=what, s=L['-m'])
+            if args_g1[0] == 1:
+                where = dirlist(base=L['-d'])
+            if args_g1[1] == 1:
+                where = dirlist(rec_l=L['-r'])
+    if args_g2 == 1:
+        what = fsearch(dirs=where,filename=L['-f'])
+    if args_g3 == 1:
+        inside = msearch(files=what, s=L['-m'])
 
-        for i in (inside, what, where):
-            if i != None:
-                if type(i) == list:
-                    for x in i:
-                        print(x)
-                if type(i) == dict:
-                    for y in i.keys():
-                        print(y,':', i[y])
-                break
+    for i in (inside, what, where):
+        if i != None:
+            if type(i) == list:
+                for x in i:
+                    print(x)
+            if type(i) == dict:
+                for y in i.keys():
+                    print(y,':', i[y])
+            break
