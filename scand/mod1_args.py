@@ -7,7 +7,7 @@ def myargs(l_args):
         if arg not in OPTS and arg.startswith('-'):
             print("Invalid option: ", arg)
             print("Usage: scand [-d path] [-r number]", end=' ')
-            print("[-f file] [-m text]")
+            print("[-f string] [-m string]")
             D = {}
             break
         if arg in D:
@@ -34,7 +34,7 @@ def myargs(l_args):
             try:
                 if arg == '-m' and '-f' not in l_args: raise SyntaxError
             except SyntaxError:
-                print('-m option requires a file to be specified. Use -f <file>')
+                print('-m option requires a file to be specified. Use -f <string>')
                 D = {}
                 break
             try:
@@ -44,7 +44,7 @@ def myargs(l_args):
         if c > 1:
             print ("Syntax error: too much arguments")
             print("Usage: scand [-d path] [-r number]", end=' ')
-            print("[-f file] [-m text]")
+            print("[-f string] [-m string]")
             D = {}
             break
         else:
