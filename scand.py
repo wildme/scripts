@@ -4,7 +4,7 @@ import sys
 import re
 import procarg
 
-def dirlist(base = os.getcwd(), rec_l = 4):
+def dirlist(base = os.getcwd(), rec_l = 3):
     root = [] 
     items = list(map((lambda x: x.path),\
             filter((lambda x: \
