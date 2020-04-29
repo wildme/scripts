@@ -4,7 +4,7 @@
 **scand** - scan the directory tree for subdirectories, files and string matches in files.  
 
 **SYNOPSIS**  
-**scand** [**-d** PATH] [**-r** NUMBER] [**-f** STRING] [**-m** STRING]  
+**scand** [**-d** PATH] [**-r** NUMBER] [**-f** STRING] [**-m** STRING] [-h]
 
 **DESCRIPTION**  
 The scand utility recursively visit each directory in the specified path.  
