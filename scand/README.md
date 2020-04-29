@@ -1,19 +1,20 @@
 # scand.py
 
 **NAME**  
-**scand** - scan the directory tree for subdirectories, files and string matches in the found files.  
+**scand** - scan the directory tree for subdirectories, files and string matches in files.  
 
 **SYNOPSIS**  
-**scand** [**-d** path] [**-r** number] [**-f** string] [**-m** string]  
+**scand** [**-d** PATH] [**-r** NUMBER] [**-f** STRING] [**-m** STRING]  
 
 **DESCRIPTION**  
-The scand utility recursively visit each directory for the specified path.  
+The scand utility recursively visit each directory in the specified path.  
 
 Available options:  
-**-d** Directory for examination. Default value: current directory.   
+**-d** Directory to start searching. Default value: current directory. 
 **-r** Recursion level. Default value: 3   
-**-f** Specifies a string to be searched in filenames. True if a string is found inside the filename.   
-**-m** A string for search inside files.   
+**-f** Specifies a string to be searched in file names. True if the string is found within a filename.   
+**-m**  the string for search inside files.   
+**-h** show short help message
 
 
 
