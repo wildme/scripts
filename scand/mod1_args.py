@@ -2,7 +2,13 @@
 
 def myargs(l_args):
     D = {} 
-    OPTS = ['-d', '-r', '-f', '-m']
+    OPTS = ['-d', '-r', '-f', '-m', '-h']
+    helpmsg="Usage: scand [OPTION]\n\
+            -d PATH\tdirectory where the search starts\n\
+            -r NUMBER\trecursion level. Default value: 3\n\
+            -f STRING\tfile name\n\
+            -m STRING\tthe string sequence to be search in files\n\
+            -h\t\tshow this help"
     for arg in l_args:
         if arg not in OPTS and arg.startswith('-'):
             print("Invalid option: ", arg)
@@ -17,6 +23,12 @@ def myargs(l_args):
         if arg in OPTS:
             ind = (l_args).index(arg)
             c = 0
+            try:
+                if arg == '-h': raise SyntaxError
+            except SyntaxError:
+                print(helpmsg)
+                D = {}
+                break
             try:
                 D[arg] = l_args[ind + 1]
             except IndexError:
