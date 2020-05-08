@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.8
 import time
 import sys
 def tik(start=0, dots=3):

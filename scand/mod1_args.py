@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.8
-
 def myargs(l_args):
     D = {} 
     OPTS = ['-d', '-r', '-f', '-m', '-h']
