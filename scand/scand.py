@@ -89,7 +89,6 @@ if __name__ == '__main__':
                 inside = msearch(files=what, s=L['-m'])
 
             p.kill()
-            print('\r')
             for i in (inside, what, where):
                 if i != None:
                     if type(i) == list:
