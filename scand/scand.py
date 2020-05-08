@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3.8
 import os
 import sys
 import re
@@ -70,9 +70,9 @@ if __name__ == '__main__':
             if '-r' in L.keys(): args_g1[1] = 1
             if '-f' in L.keys(): args_g2 = 1
             if '-m' in L.keys(): args_g3 = 1
+            
             p = Process(target=dots.tik)
             p.start()
-            
             if args_g1[0] == 1 and args_g1[1] == 1:
                 where = dirlist(base=L['-d'], rec_l=L['-r'])
             else:
@@ -87,8 +87,8 @@ if __name__ == '__main__':
                 what = fsearch(dirs=where,filename=L['-f'])
             if args_g3 == 1:
                 inside = msearch(files=what, s=L['-m'])
-
             p.kill()
+
             for i in (inside, what, where):
                 if i != None:
                     if type(i) == list:
