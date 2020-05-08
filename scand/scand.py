@@ -2,7 +2,9 @@
 import os
 import sys
 import re
+from multiprocessing  import Process
 import mod1_args
+import mod2_dots as dots
 
 def dirlist(base = os.getcwd(), rec_l = 3):
     root = [] 
@@ -68,6 +70,8 @@ if __name__ == '__main__':
             if '-r' in L.keys(): args_g1[1] = 1
             if '-f' in L.keys(): args_g2 = 1
             if '-m' in L.keys(): args_g3 = 1
+            p = Process(target=dots.tik)
+            p.start()
             
             if args_g1[0] == 1 and args_g1[1] == 1:
                 where = dirlist(base=L['-d'], rec_l=L['-r'])
@@ -84,6 +88,8 @@ if __name__ == '__main__':
             if args_g3 == 1:
                 inside = msearch(files=what, s=L['-m'])
 
+            p.kill()
+            print('\r')
             for i in (inside, what, where):
                 if i != None:
                     if type(i) == list:
