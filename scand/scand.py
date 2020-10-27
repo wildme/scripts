@@ -1,15 +1,17 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3.8
 import os
 import sys
 import re
+from multiprocessing  import Process
 import mod1_args
+import mod2_dots as dots
 
 def dirlist(base = os.getcwd(), rec_l = 3):
     root = [] 
     items = list(map((lambda x: x.path),\
             filter((lambda x: \
-            (not x.name.startswith('.')) and os.access(x, os.R_OK)\
-            and x.is_dir()),\
+            (not x.name.startswith('.')) and os.access(x, os.R_OK) \
+            and x.is_dir()), \
             os.scandir(base))))
 
     for i in items:
@@ -17,7 +19,7 @@ def dirlist(base = os.getcwd(), rec_l = 3):
             exit
         else:
             root.append(i)
-            temp = dirlist(i, rec_l = rec_l - 1)
+            temp = dirlist(i, rec_l = rec_l - 1) # recursion
             for i2 in temp:
                 root.append(i2)
     return root 
@@ -60,19 +62,23 @@ if __name__ == '__main__':
     else:
         L =  mod1_args.myargs(sys.argv[1:])
         where = what = inside = None
-        args_g1 = [0, 0]
-        args_g2 = 0
-        args_g3 = 0
+        # Groups of arguments
+        args_g1 = [0, 0] # Group 1. -d, -r. It's WHERE we look for items
+        args_g2 = 0 # Group 2. -f. It's WHAT we want to find
+        args_g3 = 0 # Group 3. -m. It's what we need INSIDE items
         if L:
             if '-d' in L.keys(): args_g1[0] = 1
             if '-r' in L.keys(): args_g1[1] = 1
             if '-f' in L.keys(): args_g2 = 1
             if '-m' in L.keys(): args_g3 = 1
             
-            if args_g1[0] == 1 and args_g1[1] == 1:
+            p = Process(target=dots.tik)
+            p.start()
+            # Setting targets for searching
+            if args_g1[0] == 1 and args_g1[1] == 1: # -d and -r are set
                 where = dirlist(base=L['-d'], rec_l=L['-r'])
             else:
-                if args_g1[0] == 0 and args_g1[1] == 0:
+                if args_g1[0] == 0 and args_g1[1] == 0: # -d and -r aren't set. Use defaults
                     where = dirlist()
                 else:
                     if args_g1[0] == 1:
@@ -83,6 +89,7 @@ if __name__ == '__main__':
                 what = fsearch(dirs=where,filename=L['-f'])
             if args_g3 == 1:
                 inside = msearch(files=what, s=L['-m'])
+            p.kill()
 
             for i in (inside, what, where):
                 if i != None:
