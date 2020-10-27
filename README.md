@@ -1,2 +1,2 @@
 # scripts
-This directory contanins scripts in Python I wrote for personal use.
+This directory contanins Python scripts I wrote for personal use.
