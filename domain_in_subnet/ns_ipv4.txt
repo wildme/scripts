@@ -1,0 +1,8 @@
+# Yandex Public DNS
+77.88.8.8
+
+# Google Public DNS
+8.8.8.8
+
+# IBM Quad9
+9.9.9.9
