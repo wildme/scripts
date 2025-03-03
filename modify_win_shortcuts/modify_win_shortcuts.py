@@ -22,10 +22,13 @@ def modify_win_shortcuts(lnks: list[str], old_str: str, new_str: str) -> None:
             lnk.path = lnk.path.replace(old_str, new_str)
             lnk.write()
 
-if __name__ == '__main__':
+def main() -> None:
     working_dir: str = sys.argv[1]
     old_str: str = sys.argv[2]
     new_str: str = sys.argv[3]
 
     lnk_files = find_win_shortcuts(working_dir)
     modify_win_shortcuts(lnk_files, old_str, new_str)
+
+if __name__ == '__main__':
+    main()
