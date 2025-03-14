@@ -6,3 +6,6 @@
 
 # IBM Quad9
 9.9.9.9
+
+# CloudFlare
+1.1.1.1
