@@ -19,7 +19,7 @@ def domain_in_subnet(domain_name: str) -> None:
     ipv4_p: Pattern = \
             re.compile('^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')
     
-    # scan the current directory for subnet_owner_ns
+    # scan the current directory for the ns_ipv4 file
     with os.scandir('.') as it:
         for entry in it:
             if filename_p.match(entry.name):
@@ -31,12 +31,12 @@ def domain_in_subnet(domain_name: str) -> None:
         with open(ns_file, "r") as file:
             line = file.readline()
             while line:
-                if comment_p.match(line) or blank_p.match(line): # skip blank lines
+                if comment_p.match(line) or blank_p.match(line): # skip blank lines and comments
                     line = file.readline()
                     continue
-                m = ipv4_p.match(line) # add a valid IPv4 address
+                m = ipv4_p.match(line)
                 if m:
-                    name_servers.add(m.group())
+                    name_servers.add(m.group()) # add a valid IPv4 address
                     line = file.readline()
     else:
         name_servers.add('8.8.8.8') # default nameserver if the file not found
