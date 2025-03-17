@@ -1,11 +1,15 @@
-# Yandex Public DNS
+# Yandex
 77.88.8.8
+77.88.8.1
 
-# Google Public DNS
+# Google
 8.8.8.8
+8.8.4.4
 
 # IBM Quad9
 9.9.9.9
+149.112.112.112
 
 # CloudFlare
 1.1.1.1
+1.0.0.1
