@@ -30,6 +30,13 @@ def update_counter(cnt: int) -> None:
     sys.stdout.write(str(cnt))
     sys.stdout.flush()
 
+def show_activity() -> None:
+    for _ in CharCircle(r'-\|/-\|/'):
+        sys.stdout.write('\b')
+        sys.stdout.write(_)
+        sys.stdout.flush()
+        time.sleep(0.3)
+
 def find_win_shortcuts(start_dir: str) -> list[str]:
     lnk_paths: list[str] = []
     counter: int = 0
