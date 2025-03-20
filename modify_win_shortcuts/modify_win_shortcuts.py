@@ -2,6 +2,29 @@ import os
 import sys
 import winshell
 
+class CharCircle:
+    def __init__(self, chars):
+        self.chars = chars
+        self.value = self.chars[0]
+        self.head = 0
+        self.tail = len(self.chars) - 1
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.head == 0: # first item
+            self.head += 1 # move pointer
+            return self.chars[0]
+
+        if self.head == self.tail: # last item
+            self.head = 0 # reset pointer
+            return self.chars[self.tail]
+
+        self.value = self.head # item between head and tail
+        self.head += 1 # move pointer
+        return self.chars[self.value]
+
 def update_counter(cnt: int) -> None:
     sys.stdout.write('\b' * len(str(eval('cnt - 1'))))
     sys.stdout.write(str(cnt))
@@ -11,7 +34,7 @@ def find_win_shortcuts(start_dir: str) -> list[str]:
     lnk_paths: list[str] = []
     counter: int = 0
 
-    print("Found files: %s" % (counter,), end='')
+    print("Found files: %s" % (counter,), end='', flush=True)
     for top, dirs, files in os.walk(start_dir):
         if not files:
             continue
