@@ -1,6 +1,8 @@
 import os
 import sys
 import winshell
+import time
+import _thread
 
 class CharCircle:
     def __init__(self, chars):
@@ -68,7 +70,12 @@ def main() -> None:
     new_str: str = sys.argv[3]
 
     lnk_files = find_win_shortcuts(working_dir)
-    modify_win_shortcuts(lnk_files, old_str, new_str)
+
+    if len(lnk_files):
+        print('Processing files: /', end='', flush=True)
+        _thread.start_new_thread(show_activity, ())
+        modify_win_shortcuts(lnk_files, old_str, new_str)
+        print('\b', 'Done!')
 
 if __name__ == '__main__':
     main()
