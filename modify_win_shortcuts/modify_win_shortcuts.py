@@ -15,17 +15,14 @@ class CharCircle:
         return self
 
     def __next__(self):
-        if self.head == 0: # first item
+        # item between head and tail
+        if self.head == 0 or self.head < self.tail:
+            self.value = self.head
             self.head += 1 # move pointer
-            return self.chars[0]
+            return self.chars[self.value]
 
-        if self.head == self.tail: # last item
-            self.head = 0 # reset pointer
-            return self.chars[self.tail]
-
-        self.value = self.head # item between head and tail
-        self.head += 1 # move pointer
-        return self.chars[self.value]
+        self.head = 0 # last item. reset pointer
+        return self.chars[self.tail]
 
 def update_counter(cnt: int) -> None:
     sys.stdout.write('\b' * len(str(eval('cnt - 1'))))
@@ -75,7 +72,7 @@ def main() -> None:
         print('Processing files: /', end='', flush=True)
         _thread.start_new_thread(show_activity, ())
         modify_win_shortcuts(lnk_files, old_str, new_str)
-        print('\b', 'Done!')
+        print('\b\b', 'Done!')
 
 if __name__ == '__main__':
     main()
