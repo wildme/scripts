@@ -16,13 +16,9 @@ class CharCircle:
 
     def __next__(self):
         # item between head and tail
-        if self.head == 0 or self.head < self.tail:
-            self.value = self.head
-            self.head += 1 # move pointer
-            return self.chars[self.value]
-
-        self.head = 0 # last item. reset pointer
-        return self.chars[self.tail]
+        self.value = self.head
+        self.head = (self.head + 1) % self.tail # reset to 0 after tail
+        return self.chars[self.value]
 
 def update_counter(cnt: int) -> None:
     sys.stdout.write('\b' * len(str(eval('cnt - 1'))))
