@@ -3,6 +3,8 @@ import sys
 import winshell
 import time
 import _thread
+from collections import deque
+from typing import Deque
 
 class CharCircle:
     def __init__(self, chars):
@@ -32,8 +34,8 @@ def show_activity() -> None:
         sys.stdout.flush()
         time.sleep(0.3)
 
-def find_win_shortcuts(start_dir: str) -> list[str]:
-    lnk_paths: list[str] = []
+def find_win_shortcuts(start_dir: str) -> Deque[str]:
+    lnk_paths: Deque[str] = deque()
     counter: int = 0
 
     print("Found files: %s" % (counter,), end='', flush=True)
@@ -50,7 +52,7 @@ def find_win_shortcuts(start_dir: str) -> list[str]:
 
     return lnk_paths
 
-def modify_win_shortcuts(lnks: list[str], old_str: str, new_str: str) -> None:
+def modify_win_shortcuts(lnks: Deque[str], old_str: str, new_str: str) -> None:
     for lnk_file in lnks:
         with winshell.shortcut(lnk_file) as lnk:
             lnk.working_directory = lnk.working_directory.replace(old_str, new_str)
@@ -62,7 +64,7 @@ def main() -> None:
     old_str: str = sys.argv[2]
     new_str: str = sys.argv[3]
 
-    lnk_files = find_win_shortcuts(working_dir)
+    lnk_files: Deque[str] = find_win_shortcuts(working_dir)
 
     if len(lnk_files):
         print('Processing files: /', end='', flush=True)
