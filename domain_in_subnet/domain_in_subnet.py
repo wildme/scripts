@@ -11,6 +11,16 @@ import re
 import sys
 import os
 
+def find_the_config_file() -> str:
+    # scan the current directory for the ns_ipv4 file
+    filename_p: Pattern = re.compile('^ns_ipv4(\\.txt)?$')
+
+    with os.scandir('.') as it:
+        for entry in it:
+            if filename_p.match(entry.name):
+                return entry.name
+    return ''
+
 def get_subnets_from_db(ipv4_addrs: set[str]) -> set[str]:
     # use the IPv4 addresse to obtain the information from ICANN
     subnets: set[str] = set()
@@ -25,22 +35,14 @@ def get_subnets_from_db(ipv4_addrs: set[str]) -> set[str]:
     return subnets
 
 def main(domain_name: str) -> None:
-    ns_file: str = ''
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
-
-    filename_p: Pattern = re.compile('^ns_ipv4(\\.txt)?$')
     comment_p: Pattern = re.compile('^#.*$')
     blank_p: Pattern = re.compile('^\\s$')
     ipv4_p: Pattern = \
             re.compile('^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')
-    
-    # scan the current directory for the ns_ipv4 file
-    with os.scandir('.') as it:
-        for entry in it:
-            if filename_p.match(entry.name):
-                ns_file = entry.name
-                break
+
+    ns_file: str = find_the_config_file()
 
     if ns_file:
         line: str = ''
