@@ -80,4 +80,10 @@ def main() -> None:
         print('\b\b', 'Done!')
 
 if __name__ == '__main__':
+    if len(sys.argv) < 4:
+        input_err_msg: str = """
+        Requred arguments: top directory, original string, replacement string
+        """
+        print(input_err_msg)
+        sys.exit(1)
     main()
