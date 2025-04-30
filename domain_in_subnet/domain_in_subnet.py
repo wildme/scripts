@@ -11,11 +11,23 @@ import re
 import sys
 import os
 
+def get_subnets_from_db(ipv4_addrs: set[str]) -> set[str]:
+    # use the IPv4 addresse to obtain the information from ICANN
+    subnets: set[str] = set()
+
+    for ipv4_addr in ipv4_addrs:
+        r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
+        r_json = r.json()
+        subnet: str = ''
+        for cidr in r_json["cidr0_cidrs"]:
+            subnet = str(cidr["v4prefix"]) + '/' + str(cidr["length"])
+            subnets.add(subnet)
+    return subnets
+
 def main(domain_name: str) -> None:
     ns_file: str = ''
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
-    subnets: set[str] = set()
 
     filename_p: Pattern = re.compile('^ns_ipv4(\\.txt)?$')
     comment_p: Pattern = re.compile('^#.*$')
@@ -50,17 +62,8 @@ def main(domain_name: str) -> None:
         for _ in answer:
             resolved_names.add(_.to_text())
 
-    # use the IPv4 addresse to obtain the information from ICANN
-    for ipv4_addr in resolved_names:
-        r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
-        r_json = r.json()
-        subnet: str = ''
-        for cidr in r_json["cidr0_cidrs"]:
-            subnet = str(cidr["v4prefix"]) + '/' + str(cidr["length"])
-            subnets.add(subnet)
-
     # print the result
-    for _ in subnets:
+    for _ in get_subnets_from_db(resolved_names):
         print(_)
 
 if __name__ == '__main__':
