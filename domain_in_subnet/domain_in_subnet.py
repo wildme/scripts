@@ -11,7 +11,7 @@ import re
 import sys
 import os
 
-def domain_in_subnet(domain_name: str) -> None:
+def main(domain_name: str) -> None:
     ns_file: str = ''
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
@@ -67,4 +67,4 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('The name of the server is required.\nExiting...')
         sys.exit(1)
-    domain_in_subnet(sys.argv[1])
+    main(sys.argv[1])
