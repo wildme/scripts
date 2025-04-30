@@ -64,4 +64,7 @@ def domain_in_subnet(domain_name: str) -> None:
         print(_)
 
 if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        print('The name of the server is required.\nExiting...')
+        sys.exit(1)
     domain_in_subnet(sys.argv[1])
