@@ -1,3 +1,10 @@
+"""
+This script recursivly vists subdirectories in the specified path and
+saves the path to every .lnk file it finds. The path and working_directory
+attributes of .lnk files will be altered according to the input from the
+user.
+"""
+
 import os
 import sys
 import winshell
