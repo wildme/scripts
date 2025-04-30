@@ -21,10 +21,32 @@ def find_the_config_file() -> str:
                 return entry.name
     return ''
 
+def parse_the_config_file(cfg_file:str) -> set[str]:
+    line: str = ''
+    name_servers: set[str] = set()
+    comment_p: Pattern = re.compile('^#.*$')
+    blank_p: Pattern = re.compile('^\\s$')
+    ipv4_p: Pattern = \
+            re.compile('^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')
+
+    with open(cfg_file, "r") as file:
+        line = file.readline()
+        while line:
+            # skip blank lines and comments
+            if comment_p.match(line) or blank_p.match(line):
+                line = file.readline()
+                continue
+            m = ipv4_p.match(line)
+            if m:
+                # add a valid IPv4 address
+                name_servers.add(m.group())
+                line = file.readline()
+    return name_servers
+
 def get_subnets_from_db(ipv4_addrs: set[str]) -> set[str]:
-    # use the IPv4 addresse to obtain the information from ICANN
     subnets: set[str] = set()
 
+    # use the IPv4 addresse to obtain the information from ICANN
     for ipv4_addr in ipv4_addrs:
         r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
         r_json = r.json()
@@ -37,27 +59,13 @@ def get_subnets_from_db(ipv4_addrs: set[str]) -> set[str]:
 def main(domain_name: str) -> None:
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
-    comment_p: Pattern = re.compile('^#.*$')
-    blank_p: Pattern = re.compile('^\\s$')
-    ipv4_p: Pattern = \
-            re.compile('^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')
-
     ns_file: str = find_the_config_file()
 
     if ns_file:
-        line: str = ''
-        with open(ns_file, "r") as file:
-            line = file.readline()
-            while line:
-                if comment_p.match(line) or blank_p.match(line): # skip blank lines and comments
-                    line = file.readline()
-                    continue
-                m = ipv4_p.match(line)
-                if m:
-                    name_servers.add(m.group()) # add a valid IPv4 address
-                    line = file.readline()
+        name_servers = parse_the_config_file(ns_file)
     else:
-        name_servers.add('8.8.8.8') # default nameserver if the file not found
+        # default nameserver if file doesn't exist
+        name_servers.add('8.8.8.8')
 
     for ns in name_servers:
         answer = dns.resolver.resolve_at(ns, domain_name, "A")
