@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This script prints the subnets which the specified domain sits in.
+The first argument to this script must be a FQDN of the server.
+"""
 
 from typing import Pattern
 import dns.resolver
