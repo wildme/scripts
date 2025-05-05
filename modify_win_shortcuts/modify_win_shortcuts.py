@@ -82,7 +82,10 @@ def main() -> None:
 if __name__ == '__main__':
     if len(sys.argv) < 4:
         input_err_msg: str = """
-        Requred arguments: top directory, original string, replacement string
+        ARGS: <top> <pattern> <replacement>
+        top - the full path to the directory where the search begins
+        pattern - pattern in the string
+        replacement - a new string
         """
         print(input_err_msg)
         sys.exit(1)
