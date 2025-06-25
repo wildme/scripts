@@ -26,8 +26,7 @@ def parse_the_config_file(cfg_file:str) -> set[str]:
     name_servers: set[str] = set()
     comment_p: Pattern = re.compile('^#.*$')
     blank_p: Pattern = re.compile('^\\s$')
-    ipv4_p: Pattern = \
-            re.compile('^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')
+    ipv4_p: Pattern = re.compile('^([0-9]{1,3}\\.){3}([0-9]{1,3})$')
 
     with open(cfg_file, "r") as file:
         line = file.readline()
