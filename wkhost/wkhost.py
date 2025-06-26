@@ -21,7 +21,7 @@ def parse_config_file() -> None:
     comment_p: Pattern = re.compile('^#.*$')
     blank_p: Pattern = re.compile('^\\s$')
     ipv4_p: Pattern = re.compile('([0-9]{1,3}\\.){3}([0-9]{1,3})')
-    mac_p: Pattern = re.compile('([a-f0-9]{2}[-:]){5}[a-f0-9]{2}')
+    mac_p: Pattern = re.compile('([a-f0-9]{2}[-:]){5}[a-f0-9]{2}', re.IGNORECASE)
 
     with open('wkconf.txt', 'r') as file:
         line = file.readline()
