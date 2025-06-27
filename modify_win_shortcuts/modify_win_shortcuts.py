@@ -1,10 +1,10 @@
+#!/usr/bin/env python3
 """
 This script recursivly vists subdirectories in the specified path and
 saves the path to every .lnk file it finds. The path and working_directory
 attributes of .lnk files will be altered according to the input from the
 user.
 """
-
 import os
 import sys
 import winshell
@@ -80,6 +80,9 @@ def main() -> None:
         print('\b\b', 'Done!')
 
 if __name__ == '__main__':
+    if os.name != 'nt':
+        print('Error: This platform is not supported. Windows only.')
+        sys.exit(1)
     if len(sys.argv) < 4:
         input_err_msg: str = """
         ARGS: <top> <pattern> <replacement>
