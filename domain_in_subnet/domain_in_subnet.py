@@ -6,6 +6,7 @@ The first argument to this script must be a FQDN of the server.
 
 from typing import Pattern
 import dns.resolver
+import concurrent.futures
 import requests
 import re
 import sys
@@ -42,38 +43,54 @@ def parse_the_config_file(cfg_file:str) -> set[str]:
                 line = file.readline()
     return name_servers
 
-def get_subnets_from_db(ipv4_addrs: set[str]) -> set[str]:
-    subnets: set[str] = set()
+def get_lookup_result(domain: str, ns: str) -> dns.resolver.Answer:
+    return dns.resolver.resolve_at(ns, domain, "A")
 
-    # use the IPv4 addresse to obtain the information from ICANN
-    for ipv4_addr in ipv4_addrs:
-        r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
-        r_json = r.json()
-        subnet: str = ''
-        for cidr in r_json["cidr0_cidrs"]:
-            subnet = str(cidr["v4prefix"]) + '/' + str(cidr["length"])
-            subnets.add(subnet)
+def get_subnet_from_db(ipv4_addr: str) -> list[str]:
+    subnet: str = ''
+    subnets: list[str] = []
+    r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
+    r_json = r.json()
+
+    for cidr in r_json["cidr0_cidrs"]:
+        subnet = str(cidr["v4prefix"]) + '/' + str(cidr["length"])
+        subnets.append(subnet)
     return subnets
 
 def main(domain_name: str) -> None:
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
+    subnets: set[str] = set()
     ns_file: str = find_the_config_file()
+    future_to_ip: dict[concurrent.futures.Future[dns.resolver.Answer], str] = {}
+    future_to_subnet: dict[concurrent.futures.Future[list[str]], str] = {}
 
     if ns_file:
         name_servers = parse_the_config_file(ns_file)
     else:
-        # default nameserver if file doesn't exist
+    # default nameserver
         name_servers.add('8.8.8.8')
 
-    for ns in name_servers:
-        answer = dns.resolver.resolve_at(ns, domain_name, "A")
-        for _ in answer:
-            resolved_names.add(_.to_text())
+    # get the loopup result
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        future_to_ip = {
+                executor.submit(get_lookup_result, domain_name, ns):
+                    ns for ns in name_servers
+                }
+        for future in concurrent.futures.as_completed(future_to_ip):
+            for _ in future.result():
+                resolved_names.add(_.to_text())
 
-    # print the result
-    for _ in get_subnets_from_db(resolved_names):
-        print(_)
+    # retriev the subnets
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        future_to_subnet = {
+                executor.submit(get_subnet_from_db, ip):
+                    ip for ip in resolved_names
+                }
+        for future in concurrent.futures.as_completed(future_to_subnet):
+            for _ in future.result():
+                subnets.add(_)
+    print(subnets)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
