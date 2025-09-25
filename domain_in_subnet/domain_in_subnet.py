@@ -47,7 +47,6 @@ def get_lookup_result(domain: str, ns: str) -> dns.resolver.Answer:
     return dns.resolver.resolve_at(ns, domain, "A")
 
 def get_subnet_from_db(ipv4_addr: str) -> list[str]:
-    subnet: str = ''
     r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
     r_json = r.json()
     subnets = [str(cidr["v4prefix"]) + '/' + str(cidr["length"]) for cidr in r_json["cidr0_cidrs"]]
