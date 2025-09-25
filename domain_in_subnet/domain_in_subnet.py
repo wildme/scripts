@@ -59,7 +59,7 @@ def main(domain_name: str) -> None:
     resolved_names: set[str] = set()
     subnets: set[str] = set()
     ns_file: str = find_the_config_file()
-    future_to_ip: dict[concurrent.futures.Future[dns.resolver.Answer], str] = {}
+    future_to_ip: dict[concurrent.futures.Future, str] = {}
     future_to_subnet: dict[concurrent.futures.Future, str] = {}
 
     if ns_file:
