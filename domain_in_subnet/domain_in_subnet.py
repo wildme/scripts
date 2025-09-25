@@ -63,7 +63,7 @@ def main(domain_name: str) -> None:
     subnets: set[str] = set()
     ns_file: str = find_the_config_file()
     future_to_ip: dict[concurrent.futures.Future[dns.resolver.Answer], str] = {}
-    future_to_subnet: dict[concurrent.futures.Future[list[str]], str] = {}
+    future_to_subnet: dict[concurrent.futures.Future, str] = {}
 
     if ns_file:
         name_servers = parse_the_config_file(ns_file)
