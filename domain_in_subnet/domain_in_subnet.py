@@ -11,6 +11,7 @@ import requests
 import re
 import sys
 import os
+import time
 
 def find_the_config_file() -> str:
     # scan the current directory for the ns_ipv4 file
@@ -47,6 +48,7 @@ def get_lookup_result(domain: str, ns: str) -> dns.resolver.Answer:
     return dns.resolver.resolve_at(ns, domain, "A")
 
 def get_subnet_from_db(ipv4_addr: str) -> list[str]:
+    time.sleep(0.5)
     try:
         r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}', timeout=(6, 27))
     except requests.ReadTimeout:
