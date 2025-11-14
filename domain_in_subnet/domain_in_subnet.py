@@ -47,19 +47,29 @@ def get_lookup_result(domain: str, ns: str) -> dns.resolver.Answer:
     return dns.resolver.resolve_at(ns, domain, "A")
 
 def get_subnet_from_db(ipv4_addr: str) -> list[str]:
-    r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}')
-    r_json = r.json()
-    subnets = [str(cidr["v4prefix"]) + '/' + str(cidr["length"]) for cidr in r_json["cidr0_cidrs"]]
-
-    return subnets
+    try:
+        r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}', timeout=(6, 27))
+    except requests.ReadTimeout:
+        print("No response for %s" % ipv4_addr)
+        return []
+    except requests.ConnectionError:
+        print("Connection error")
+        return []
+    except:
+        print("Somthing went wrong")
+        return []
+    else:
+        r_json = r.json()
+        subnets = [str(cidr["v4prefix"]) + '/' + str(cidr["length"]) for cidr in r_json["cidr0_cidrs"]]
+        return subnets
 
 def main(domain_name: str) -> None:
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
     subnets: set[str] = set()
     ns_file: str = find_the_config_file()
-    future_to_ip: dict[concurrent.futures.Future, str] = {}
-    future_to_subnet: dict[concurrent.futures.Future, str] = {}
+    future_to_ip: dict[concurrent.futures.Future, str] = {} # Future: nameserver
+    future_to_subnet: dict[concurrent.futures.Future, str] = {} # Future: subnet
 
     if ns_file:
         name_servers = parse_the_config_file(ns_file)
@@ -67,7 +77,7 @@ def main(domain_name: str) -> None:
     # default nameserver
         name_servers.add('8.8.8.8')
 
-    # get the loopup result
+    # get the lookup result
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         future_to_ip = {
                 executor.submit(get_lookup_result, domain_name, ns):
@@ -90,6 +100,6 @@ def main(domain_name: str) -> None:
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print('The name of the server is required.\nExiting...')
+        print('Domain is required.\nExiting...')
         sys.exit(1)
     main(sys.argv[1])
