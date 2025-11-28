@@ -36,3 +36,16 @@ class ShowCounter:
         sys.stdout.write(str(cnt))
         sys.stdout.flush()
 
+class Dot:
+    def __init__(self, length=3):
+        self.length = length
+
+    def start(self, count=0):
+        if count < self.length:
+            sys.stdout.write('.')
+            sys.stdout.flush()
+            time.sleep(1)
+            self.start(count + 1)
+        else:
+            sys.stdout.write('\b \b' * self.length)
+            self.start()
