@@ -6,12 +6,16 @@ The first argument to this script must be a FQDN of the server.
 
 from typing import Pattern
 import dns.resolver
+import _thread
 import concurrent.futures
 import requests
 import re
 import sys
 import os
 import time
+
+sys.path.append('../')
+from mods.txtviz import Dot
 
 def find_the_config_file() -> str:
     # scan the current directory for the ns_ipv4 file
@@ -52,20 +56,20 @@ def get_subnet_from_db(ipv4_addr: str) -> list[str]:
     try:
         r = requests.get(f'https://rdap.arin.net/registry/ip/{ipv4_addr}', timeout=(6, 27))
     except requests.ReadTimeout:
-        print("No response for %s" % ipv4_addr)
+        print("No response for %s" % ipv4_addr, file=sys.stderr)
         return []
     except requests.ConnectionError:
-        print("Connection error")
+        print("Connection error", file=sys.stderr)
         return []
     except:
-        print("Somthing went wrong")
+        print("Somthing went wrong", file=sys.stderr)
         return []
     else:
         r_json = r.json()
         subnets = [str(cidr["v4prefix"]) + '/' + str(cidr["length"]) for cidr in r_json["cidr0_cidrs"]]
         return subnets
 
-def main(domain_name: str) -> None:
+def main(domain_name: str) -> set[str]:
     name_servers: set[str] = set()
     resolved_names: set[str] = set()
     subnets: set[str] = set()
@@ -98,10 +102,16 @@ def main(domain_name: str) -> None:
         for future in concurrent.futures.as_completed(future_to_subnet):
             for _ in future.result():
                 subnets.add(_)
-    print(subnets)
+    return subnets
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('Domain is required.\nExiting...')
         sys.exit(1)
-    main(sys.argv[1])
+    print('Getting subnets: ', end='', flush=True)
+    dot = Dot(5)
+    _thread.start_new_thread(dot.start, ())
+    res = main(sys.argv[1])
+    if res:
+        print('Done!')
+        print(res)
