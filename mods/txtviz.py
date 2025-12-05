@@ -24,7 +24,7 @@ class CharCircle:
             sys.stdout.flush()
             time.sleep(0.3)
 
-class ShowCounter:
+class Counter:
     def __init__(self):
         self.value = 0
 
