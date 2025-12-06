@@ -19,8 +19,7 @@ class CharCircle:
 
     def start(self):
         for _ in self:
-            sys.stdout.write('\b')
-            sys.stdout.write(_)
+            sys.stdout.write('\b' + _)
             sys.stdout.flush()
             time.sleep(0.3)
 
