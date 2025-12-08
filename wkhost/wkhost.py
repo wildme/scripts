@@ -7,7 +7,10 @@ import os
 import time
 import re
 from typing import Pattern
-from wakeonlan import send_magic_packet
+#from wakeonlan import send_magic_packet
+
+sys.path.append('../')
+from mods.txtviz import Counter
 
 mac_addr: str = ''
 ip_addr: str = ''
@@ -51,42 +54,45 @@ def parse_config_file() -> None:
                 mac_addr = m_str.group()
                 line = file.readline()
 
-def update_countdown(cnt: int) -> None:
-    sys.stdout.write('\b \b' * len(str(eval('cnt + 1'))))
-    sys.stdout.write(str(cnt))
-    sys.stdout.flush()
-        
-def main() -> None:
+def wakeup_host(mac) -> None:
+    global os_startup_time_in_sec
+    counter = Counter(os_startup_time_in_sec)
+    current_cnt: int = os_startup_time_in_sec
+    print("Sending a magic packet...")
+    #send_magic_packet(mac)
+    print("Waiting for system startup: %s" % (os_startup_time_in_sec,), end='', flush=True)
+
+    for _ in range(os_startup_time_in_sec):
+        if current_cnt >= 0:
+            time.sleep(1)
+            current_cnt = counter.decrement()
+            counter.update_decr(counter.value)
+    print("\bDone")
+
+def ping_host(ip) -> None:
+    global ping_count
     host_status: str = "Offline"
     os_name: str = os.name
-    global os_startup_time_in_sec
-    global ping_count
-    global ip_addr
-    global mac_addr
-        
-    send_magic_packet(mac_addr)
-    print("Sending a magic packet...")
-    print("Waiting for system startup: %s" % (os_startup_time_in_sec,), end='', flush=True)
-        
-    for _ in range(os_startup_time_in_sec):
-        if os_startup_time_in_sec > 0:
-            time.sleep(1)
-            os_startup_time_in_sec -= 1
-        update_countdown(os_startup_time_in_sec)
-    
-    print("\bDone")
+
     print("Host status: ", end='', flush=True)
 
     if os_name == 'nt':
-        ping_result = os.system(f'ping -4 -n {ping_count} {ip_addr} 1> nul')
+        ping_result = os.system(f'ping -4 -n {ping_count} {ip} 1> nul')
     if os_name == 'posix':
-        ping_result = os.system(f'ping -4 -c {ping_count} {ip_addr} > /dev/null')
+        ping_result = os.system(f'ping -4 -c {ping_count} {ip} > /dev/null')
 
     if ping_result == 0:
         host_status = "Online"
     print(host_status)
+
+def main() -> None:
+    global ip_addr
+    global mac_addr
+
+    wakeup_host(mac_addr)
+    ping_host(ip_addr)
     input("Press Enter to exit...")
-        
+
 if __name__ == '__main__':
     parse_config_file()
     input_err_msg: str = """
@@ -96,7 +102,6 @@ if __name__ == '__main__':
         PING_COUNT - number of ECHO_REQUEST packets to send (Default: 2)
         OS_STARTUP_TIME_IN_SEC - system startup time in sec (Default: 10)
         """
-
     if not mac_addr or not ip_addr:
         print("ERROR: MAC-address or IP-address is missing!")
         print(input_err_msg)
