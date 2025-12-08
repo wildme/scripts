@@ -28,7 +28,7 @@ def find_win_shortcuts(start_dir: str) -> Deque[str]:
             # save the path in the list
             lnk_paths.append(os.path.join(top, lnk))
             counter.increment()
-            counter.update(counter.value)
+            counter.update_inc(counter.value)
     print()
 
     return lnk_paths
