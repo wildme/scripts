@@ -24,14 +24,23 @@ class CharCircle:
             time.sleep(0.3)
 
 class Counter:
-    def __init__(self):
-        self.value = 0
+    def __init__(self, n=0):
+        self.value = n
 
     def increment(self):
         self.value += 1
 
-    def update(self, cnt):
+    def update_inc(self, cnt):
         sys.stdout.write('\b' * len(str(eval('cnt - 1'))))
+        sys.stdout.write(str(cnt))
+        sys.stdout.flush()
+
+    def decrement(self):
+        self.value -= 1
+        return self.value
+
+    def update_decr(self, cnt):
+        sys.stdout.write('\b \b' * len(str(eval('cnt + 1'))))
         sys.stdout.write(str(cnt))
         sys.stdout.flush()
 
