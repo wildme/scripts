@@ -7,7 +7,7 @@ import os
 import time
 import re
 from typing import Pattern
-#from wakeonlan import send_magic_packet
+from wakeonlan import send_magic_packet
 
 sys.path.append('../')
 from mods.txtviz import Counter
@@ -57,15 +57,14 @@ def parse_config_file() -> None:
 def wakeup_host(mac) -> None:
     global os_startup_time_in_sec
     counter = Counter(os_startup_time_in_sec)
-    current_cnt: int = os_startup_time_in_sec
     print("Sending a magic packet...")
-    #send_magic_packet(mac)
+    send_magic_packet(mac)
     print("Waiting for system startup: %s" % (os_startup_time_in_sec,), end='', flush=True)
 
     for _ in range(os_startup_time_in_sec):
-        if current_cnt >= 0:
+        if counter.value >= 0:
             time.sleep(1)
-            current_cnt = counter.decrement()
+            counter.decrement()
             counter.update_decr(counter.value)
     print("\bDone")
 
