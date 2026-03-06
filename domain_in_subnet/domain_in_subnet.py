@@ -48,8 +48,13 @@ def parse_the_config_file(cfg_file:str) -> set[str]:
                 line = file.readline()
     return name_servers
 
-def get_lookup_result(domain: str, ns: str) -> dns.resolver.Answer:
-    return dns.resolver.resolve_at(ns, domain, "A")
+def get_lookup_result(domain: str, ns: str) -> dns.resolver.Answer | str:
+    res: dns.resolver.Answer | str = ''
+    try:
+        res = dns.resolver.resolve_at(ns, domain, "A")
+    except dns.resolver.LifetimeTimeout:
+        pass
+    return res
 
 def get_subnet_from_db(ipv4_addr: str) -> list[str]:
     time.sleep(0.5)
