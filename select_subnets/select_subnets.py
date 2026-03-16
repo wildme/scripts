@@ -26,8 +26,14 @@ def main(web_targets: list[str] | None = None) -> None:
     res: set[str] = set()
     tmp: set[str] = set()
 
-    with open(db_file, 'r') as file:
-        data = json.load(file)
+    try:
+        json_file = open(db_file, 'r')
+    except:
+        print(f'Error: cannot access {db_file}. Exiting...')
+        sys.exit(1)
+
+    data = json.load(json_file)
+    json_file.close()
 
     if web_targets == None:
         web_targets = [x for x in data.keys()]
