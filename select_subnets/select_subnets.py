@@ -51,4 +51,5 @@ def main(web_targets: list[str] | None = None) -> None:
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         main()
-    main(sys.argv[1:])
+    else:
+        main(sys.argv[1:])
