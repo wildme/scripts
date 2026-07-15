@@ -242,10 +242,18 @@
     ]
   },
   "stackoverflow": {
-    "stackoverflow.co": [
+    "stackoverflow.com": [
       "3.0.0.0/9",
       "15.196.0.0/14",
       "15.200.0.0/16"
+    ]
+  },
+  "github": {
+    "github.com": [
+      "140.82.112.0/20"
+    ],
+    "avatars.githubusercontent.com": [
+      "185.199.108.0/22"
     ]
   }
 }
